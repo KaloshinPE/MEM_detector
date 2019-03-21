@@ -27,7 +27,7 @@ for x in tqdm(lmbda_range):
         mem.fit(X_train_lmbda, y_train_lmbda)
         lmbda_score[j] += accuracy_score(y_test_lmbda, mem.predict(X_test_lmbda))
     j+=1
-    print(j)
+
 lmbda_score = lmbda_score/5
 
 lmbda_opt = lmbda_range[np.argmax(lmbda_score)]
