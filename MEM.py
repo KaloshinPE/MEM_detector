@@ -2,9 +2,10 @@ import numpy as np
 
 
 class MEM:
-    def __init__(self, lmbda=0.1):
+    def __init__(self, lmbda=0.1, batch_size=20):
         self.lmbda = lmbda
         self.alpha = None
+        self.batch_size = batch_size
 
     def fit(self, X, y, lr=0.01, lr_decay=300, max_iter=5000, min_diff=1e-5):
         X = np.c_[np.ones((X.shape[0])), X]
@@ -14,9 +15,13 @@ class MEM:
 
         last_F = None
         for i in range(max_iter):
-            data_multipliers = y*X
+            ind = np.random.choice(range(X.shape[0]), self.batch_size, False)
+            Xs = X[ind]
+            ys = y[ind]
+            
+            data_multipliers = ys*Xs
             t = (data_multipliers @ self.alpha)[:, None]
-            grad_multipliers = np.ones((X.shape[0], 1))
+            grad_multipliers = np.ones((Xs.shape[0], 1))
             grad_multipliers[t > -1] = 0.5
             max_values = 1 - grad_multipliers - grad_multipliers*t
             nonzero_mask = max_values > 0
